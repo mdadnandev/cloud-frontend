@@ -12,7 +12,8 @@ const formatSize = (bytes) => {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 };
 
-export default function FileCard({ file, viewMode, onContextMenu }) {
+// ADDED onClick to props
+export default function FileCard({ file, viewMode, onContextMenu, onClick }) {
   const fileName = file.originalName || file.name || 'Untitled';
   const ext = getFileExtension(fileName);
 
@@ -36,6 +37,7 @@ export default function FileCard({ file, viewMode, onContextMenu }) {
       <div
         className="list-row"
         onContextMenu={(e) => onContextMenu(e, file, 'file')}
+        onClick={() => onClick && onClick(file)} // ADDED: Trigger onClick when file is clicked
       >
         <span className="list-row-icon icon">{docSvg}</span>
         <span className="list-row-name">{fileName}</span>
@@ -46,7 +48,7 @@ export default function FileCard({ file, viewMode, onContextMenu }) {
         <button
           className="list-row-more menu-trigger"
           onClick={(e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Prevents the file click event from firing when clicking the menu
             onContextMenu(e, file, 'file');
           }}
           aria-label="More options"
@@ -63,13 +65,14 @@ export default function FileCard({ file, viewMode, onContextMenu }) {
     <div
       className="file-card tick"
       onContextMenu={(e) => onContextMenu(e, file, 'file')}
+      onClick={() => onClick && onClick(file)} // ADDED: Trigger onClick when file is clicked
     >
       <div className="file-card-top">
         <span className="file-card-icon icon">{docSvg}</span>
         <button
           className="file-card-more menu-trigger"
           onClick={(e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Prevents the file click event from firing when clicking the menu
             onContextMenu(e, file, 'file');
           }}
           aria-label="More options"
@@ -87,4 +90,3 @@ export default function FileCard({ file, viewMode, onContextMenu }) {
     </div>
   );
 }
-
