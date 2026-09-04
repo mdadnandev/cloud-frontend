@@ -1,43 +1,7 @@
-import {
-  FileText,
-  FileImage,
-  FileVideo,
-  FileAudio,
-  FileArchive,
-  FileCode,
-  File,
-  MoreVertical,
-} from 'lucide-react';
-
-const getFileIcon = (mimeType) => {
-  if (!mimeType) return File;
-  if (mimeType.startsWith('image/')) return FileImage;
-  if (mimeType.startsWith('video/')) return FileVideo;
-  if (mimeType.startsWith('audio/')) return FileAudio;
-  if (mimeType.includes('zip') || mimeType.includes('rar') || mimeType.includes('tar') || mimeType.includes('archive'))
-    return FileArchive;
-  if (
-    mimeType.includes('javascript') ||
-    mimeType.includes('json') ||
-    mimeType.includes('html') ||
-    mimeType.includes('css') ||
-    mimeType.includes('xml')
-  )
-    return FileCode;
-  if (
-    mimeType.includes('pdf') ||
-    mimeType.includes('document') ||
-    mimeType.includes('text') ||
-    mimeType.includes('word')
-  )
-    return FileText;
-  return File;
-};
-
 const getFileExtension = (name) => {
-  if (!name) return '';
+  if (!name) return 'FILE';
   const parts = name.split('.');
-  return parts.length > 1 ? parts.pop().toUpperCase() : '';
+  return parts.length > 1 ? parts.pop().toUpperCase() : 'FILE';
 };
 
 const formatSize = (bytes) => {
@@ -49,31 +13,47 @@ const formatSize = (bytes) => {
 };
 
 export default function FileCard({ file, viewMode, onContextMenu }) {
-  const IconComponent = getFileIcon(file.mimeType);
-  const ext = getFileExtension(file.originalName);
+  const fileName = file.originalName || file.name || 'Untitled';
+  const ext = getFileExtension(fileName);
+
+  const docSvg = (
+    <svg viewBox="0 0 20 20">
+      <path d="M5.5 2.5h6l3 3v11a1 1 0 01-1 1h-8a1 1 0 01-1-1v-13a1 1 0 011-1z" />
+      <path d="M11.5 2.5v3h3" />
+    </svg>
+  );
+
+  const moreSvg = (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+      <circle cx="10" cy="4.5" r="1.1" />
+      <circle cx="10" cy="10" r="1.1" />
+      <circle cx="10" cy="15.5" r="1.1" />
+    </svg>
+  );
 
   if (viewMode === 'list') {
     return (
       <div
-        className="file-list-row"
+        className="list-row"
         onContextMenu={(e) => onContextMenu(e, file, 'file')}
       >
-        <div className="file-list-icon">
-          <IconComponent size={18} />
-        </div>
-        <span className="file-list-name">{file.originalName}</span>
-        <span className="file-list-date">
-          {file.createdAt ? new Date(file.createdAt).toLocaleDateString() : '—'}
+        <span className="list-row-icon icon">{docSvg}</span>
+        <span className="list-row-name">{fileName}</span>
+        <span className="list-row-date mono">
+          {file.createdAt ? new Date(file.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
         </span>
-        <span className="file-list-size">{formatSize(file.size)}</span>
+        <span className="list-row-size mono">{formatSize(file.size)}</span>
         <button
-          className="btn-icon"
+          className="list-row-more menu-trigger"
           onClick={(e) => {
             e.stopPropagation();
             onContextMenu(e, file, 'file');
           }}
+          aria-label="More options"
         >
-          <MoreVertical size={16} />
+          <span className="icon" style={{ width: 14, height: 14 }}>
+            {moreSvg}
+          </span>
         </button>
       </div>
     );
@@ -81,28 +61,30 @@ export default function FileCard({ file, viewMode, onContextMenu }) {
 
   return (
     <div
-      className="file-card"
+      className="file-card tick"
       onContextMenu={(e) => onContextMenu(e, file, 'file')}
     >
-      <button
-        className="file-card-more"
-        onClick={(e) => {
-          e.stopPropagation();
-          onContextMenu(e, file, 'file');
-        }}
-      >
-        <MoreVertical size={14} />
-      </button>
-      <div className="file-card-icon">
-        <IconComponent size={40} />
-        {ext && <span className="file-card-type">{ext}</span>}
+      <div className="file-card-top">
+        <span className="file-card-icon icon">{docSvg}</span>
+        <button
+          className="file-card-more menu-trigger"
+          onClick={(e) => {
+            e.stopPropagation();
+            onContextMenu(e, file, 'file');
+          }}
+          aria-label="More options"
+        >
+          <span className="icon" style={{ width: 14, height: 14 }}>
+            {moreSvg}
+          </span>
+        </button>
       </div>
-      <div className="file-card-name">{file.originalName}</div>
+      <div className="file-card-name">{fileName}</div>
       <div className="file-card-meta">
-        <span>{formatSize(file.size)}</span>
-        <span>•</span>
-        <span>{file.createdAt ? new Date(file.createdAt).toLocaleDateString() : ''}</span>
+        <span className="ext">{ext}</span>
+        <span className="mono">{formatSize(file.size)}</span>
       </div>
     </div>
   );
 }
+

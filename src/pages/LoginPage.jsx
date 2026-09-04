@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import '../styles/auth.css';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -20,7 +21,7 @@ export default function LoginPage() {
       await login(email, password);
       navigate('/');
     } catch (err) {
-      setError("That email and password don't match. Try again.");
+      setError(err?.response?.data?.message || "That email and password don't match. Try again.");
     } finally {
       setLoading(false);
     }
@@ -30,7 +31,10 @@ export default function LoginPage() {
     <div className="auth-shell">
       <div className="auth-brand">
         <div className="auth-mark icon">
-          <svg viewBox="0 0 20 20"><path d="M2.5 6.5 10 2.5l7.5 4v7l-7.5 4-7.5-4z"/><path d="M2.5 6.5 10 10.5l7.5-4M10 10.5v7"/></svg>
+          <svg viewBox="0 0 20 20">
+            <path d="M2.5 6.5 10 2.5l7.5 4v7l-7.5 4-7.5-4z" />
+            <path d="M2.5 6.5 10 10.5l7.5-4M10 10.5v7" />
+          </svg>
         </div>
         <h1>Crate</h1>
         <p>Every file, exactly where you left it.</p>
@@ -41,7 +45,10 @@ export default function LoginPage() {
           {error && (
             <div className="auth-error show">
               <span className="icon">
-                <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5"/><path d="M10 6.5v4.2M10 13.3v.1"/></svg>
+                <svg viewBox="0 0 20 20">
+                  <circle cx="10" cy="10" r="7.5" />
+                  <path d="M10 6.5v4.2M10 13.3v.1" />
+                </svg>
               </span>
               <span>{error}</span>
             </div>
@@ -76,7 +83,7 @@ export default function LoginPage() {
               <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
               <span>Stay signed in</span>
             </label>
-            <Link to="/forgot-password" className="link">Forgot password</Link>
+            <a href="#" className="link" onClick={(e) => e.preventDefault()}>Forgot password</a>
           </div>
 
           <button type="submit" className="btn btn-primary btn-block" disabled={loading}>

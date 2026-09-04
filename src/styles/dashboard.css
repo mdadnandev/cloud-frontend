@@ -1,8 +1,12 @@
 /* ==========================================
-   DASHBOARD LAYOUT
+   DASHBOARD LAYOUT STYLES — Crate Theme
    ========================================== */
 
-.app-shell { display: flex; min-height: 100vh; }
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
 .app-main {
   flex: 1;
   margin-left: var(--rail-w);
@@ -26,6 +30,7 @@
   background: rgba(20, 23, 28, .92);
   backdrop-filter: blur(8px);
 }
+
 .header-menu-btn {
   display: none;
   width: 34px;
@@ -39,8 +44,20 @@
   cursor: pointer;
 }
 
-.search { position: relative; flex: 1; max-width: 420px; }
-.search .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--graphite); }
+.search {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+}
+
+.search .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--graphite);
+}
+
 .search input {
   width: 100%;
   padding: 9px 14px 9px 38px;
@@ -50,11 +67,30 @@
   color: var(--chalk);
   transition: border-color .14s var(--ease);
 }
-.search input::placeholder { color: var(--graphite); }
-.search input:focus { border-color: var(--brass); outline: none; }
 
-.header-actions { margin-left: auto; display: flex; align-items: center; gap: 14px; }
-.view-toggle { display: flex; border: 1px solid var(--hairline-strong); border-radius: 6px; overflow: hidden; }
+.search input::placeholder {
+  color: var(--graphite);
+}
+
+.search input:focus {
+  border-color: var(--brass);
+  outline: none;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.view-toggle {
+  display: flex;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
 .view-btn {
   width: 34px;
   height: 32px;
@@ -67,28 +103,96 @@
   cursor: pointer;
   transition: background .12s var(--ease), color .12s var(--ease);
 }
-.view-btn + .view-btn { border-left: 1px solid var(--hairline-strong); }
-.view-btn.active { background: var(--brass-soft); color: var(--brass); }
+
+.view-btn + .view-btn {
+  border-left: 1px solid var(--hairline-strong);
+}
+
+.view-btn.active {
+  background: var(--brass-soft);
+  color: var(--brass);
+}
 
 /* Content */
-.app-content { flex: 1; padding: 26px 32px 60px; max-width: 1200px; width: 100%; margin: 0 auto; }
+.app-content {
+  flex: 1;
+  padding: 26px 32px 60px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
 
-.crumb { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--graphite); margin-bottom: 14px; }
-.crumb .current { color: var(--chalk-dim); }
-.crumb span:not(.sep) { cursor: pointer; }
-.crumb span:not(.sep):hover { color: var(--chalk); }
-.crumb .sep { opacity: .5; }
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--graphite);
+  margin-bottom: 14px;
+}
 
-.content-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 22px; gap: 16px; flex-wrap: wrap; }
-.content-head h1 { font-size: 1.5rem; font-weight: 600; }
-.content-head .sub { font-size: 13px; color: var(--graphite); margin-top: 4px; }
-.content-actions { display: flex; align-items: center; gap: 8px; }
-.btn-icon { padding: 9px; }
-.btn-icon .icon { transition: transform .3s var(--ease); }
-.btn-icon.is-spinning .icon { transform: rotate(360deg); }
+.crumb .current {
+  color: var(--chalk-dim);
+}
+
+.crumb span:not(.sep) {
+  cursor: pointer;
+}
+
+.crumb span:not(.sep):hover {
+  color: var(--chalk);
+}
+
+.crumb .sep {
+  opacity: .5;
+}
+
+.content-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.content-head h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.content-head .sub {
+  font-size: 13px;
+  color: var(--graphite);
+  margin-top: 4px;
+}
+
+.content-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-icon {
+  padding: 9px;
+}
+
+.btn-icon .icon {
+  transition: transform .3s var(--ease);
+}
+
+.btn-icon.is-spinning .icon {
+  transform: rotate(360deg);
+}
 
 @media (max-width: 880px) {
-  .app-main { margin-left: 0; }
-  .header-menu-btn { display: flex; }
-  .app-content { padding: 20px 16px 50px; }
+  .app-main {
+    margin-left: 0;
+  }
+  .header-menu-btn {
+    display: flex;
+  }
+  .app-content {
+    padding: 20px 16px 50px;
+  }
 }
