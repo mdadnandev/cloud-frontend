@@ -112,18 +112,17 @@ export default function DashboardPage() {
   };
 
   // ==========================================
-  // LOGIC TO OPEN THE FILE
+  // DIRECT RENDER SERVER SE FILE OPEN KARNE KA LOGIC
   // ==========================================
   const handleFileClick = async (file) => {
     console.log("➡️ STEP 1: File clicked! Data:", file);
 
     try {
-      // Get the auth token that we saved during login
       const token = localStorage.getItem('token');
       console.log("➡️ STEP 2: Token available?", token ? "Yes" : "No");
 
-      // Request the download URL from Spring Boot
-      const response = await fetch(`http://localhost:8080/api/files/${file.id}/download-url`, {
+      // Yahan direct Render API lagayi gayi hai (localhost hata diya hai)
+      const response = await fetch(`https://cloud-backend-2-miwe.onrender.com/api/files/${file.id}/download-url`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -243,7 +242,7 @@ export default function DashboardPage() {
             viewMode={viewMode}
             loading={loading}
             onFolderClick={handleFolderClick}
-            onFileClick={handleFileClick} /* ⬅️ PASSING THE FUNCTION HERE */
+            onFileClick={handleFileClick}
             onContextMenu={handleContextMenu}
             activeView={activeView}
             searchQuery={searchQuery}
