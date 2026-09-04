@@ -1,24 +1,24 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, User, AlertCircle, Cloud } from 'lucide-react';
-import '../styles/auth.css';
 
 export default function RegisterPage() {
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (password !== confirm) {
+      setError("Those passwords don't match.");
       return;
     }
 
@@ -27,99 +27,60 @@ export default function RegisterPage() {
       await register(name, email, password);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err?.message || 'Something went wrong creating your account.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-bg">
-        <div className="orb orb-1" />
-        <div className="orb orb-2" />
-        <div className="orb orb-3" />
+    <div className="auth-shell">
+      <div className="auth-brand">
+        <div className="auth-mark icon">
+          <svg viewBox="0 0 20 20"><path d="M2.5 6.5 10 2.5l7.5 4v7l-7.5 4-7.5-4z"/><path d="M2.5 6.5 10 10.5l7.5-4M10 10.5v7"/></svg>
+        </div>
+        <h1>Crate</h1>
+        <p>Start keeping your files in order.</p>
       </div>
 
-      <div className="auth-card">
-        <div className="auth-logo">
-          <div className="auth-logo-icon">
-            <Cloud size={28} color="white" />
-          </div>
-          <h1>CloudDrive</h1>
-          <p>Create your account to get started</p>
-        </div>
-
-        {error && (
-          <div className="auth-error">
-            <AlertCircle size={16} />
-            {error}
-          </div>
-        )}
-
+      <div className="auth-card tick">
         <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="input-group">
-            <div style={{ position: 'relative' }}>
-              <input
-                id="register-name"
-                type="text"
-                className="input-field"
-                placeholder="Full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                autoComplete="name"
-              />
-              <User className="input-icon" size={18} />
+          {error && (
+            <div className="auth-error show">
+              <span className="icon">
+                <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5"/><path d="M10 6.5v4.2M10 13.3v.1"/></svg>
+              </span>
+              <span>{error}</span>
             </div>
-          </div>
+          )}
 
-          <div className="input-group">
-            <div style={{ position: 'relative' }}>
-              <input
-                id="register-email"
-                type="email"
-                className="input-field"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-              />
-              <Mail className="input-icon" size={18} />
-            </div>
-          </div>
+          <label className="field">
+            <span>Full name</span>
+            <input type="text" placeholder="Maya Kessler" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} required />
+          </label>
 
-          <div className="input-group">
-            <div style={{ position: 'relative' }}>
-              <input
-                id="register-password"
-                type="password"
-                className="input-field"
-                placeholder="Password (min 6 characters)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-                minLength={6}
-              />
-              <Lock className="input-icon" size={18} />
-            </div>
-          </div>
+          <label className="field">
+            <span>Email</span>
+            <input type="email" placeholder="you@studio.com" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </label>
 
-          <button
-            id="register-submit"
-            type="submit"
-            className="auth-submit"
-            disabled={loading}
-          >
-            {loading ? <div className="spinner" /> : 'Create Account'}
+          <label className="field">
+            <span>Password</span>
+            <input type="password" placeholder="••••••••" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </label>
+
+          <label className="field">
+            <span>Confirm password</span>
+            <input type="password" placeholder="••••••••" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
+          </label>
+
+          <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+            {loading ? 'Creating account…' : 'Create account'}
           </button>
         </form>
 
-        <div className="auth-toggle">
-          Already have an account?{' '}
-          <Link to="/login">Sign in</Link>
+        <div className="auth-foot">
+          Already have an account? <Link to="/login" className="link">Sign in</Link>
         </div>
       </div>
     </div>
