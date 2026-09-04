@@ -63,6 +63,9 @@ export const fileAPI = {
   
   listFiles: (folderId) =>
     api.get('/files', { params: folderId ? { folderId } : {} }),
+
+  getDownloadUrl: (id) =>
+    api.get(`/files/${id}/download-url`),
 };
 
 // ============ FOLDERS ============

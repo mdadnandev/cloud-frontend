@@ -55,7 +55,14 @@ export default function ContextMenu({ x, y, item, itemType, onClose, onAction })
     </svg>
   );
 
+  const openSvg = (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 3v10m0 0l-3.5-3.5M10 13l3.5-3.5M4 16.5h12" />
+    </svg>
+  );
+
   const fileActions = [
+    { id: 'open', label: 'Open / Download', svg: openSvg },
     { id: 'rename', label: 'Rename', svg: renameSvg },
     { id: 'share', label: 'Share', svg: shareSvg },
     { id: 'move', label: 'Move to', svg: moveSvg },
@@ -64,6 +71,7 @@ export default function ContextMenu({ x, y, item, itemType, onClose, onAction })
   ];
 
   const folderActions = [
+    { id: 'open', label: 'Open Folder', svg: openSvg },
     { id: 'rename', label: 'Rename', svg: renameSvg },
     { divider: true },
     { id: 'trash', label: 'Delete', svg: trashSvg, danger: true },

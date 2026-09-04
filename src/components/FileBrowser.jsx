@@ -8,6 +8,7 @@ export default function FileBrowser({
   viewMode = 'grid',
   loading = false,
   onFolderClick,
+  onFileClick,
   onContextMenu,
   activeView = 'my-drive',
   searchQuery = '',
@@ -140,6 +141,7 @@ export default function FileBrowser({
                   key={file.id}
                   file={file}
                   viewMode="grid"
+                  onClick={onFileClick}
                   onContextMenu={onContextMenu}
                 />
               ))}
@@ -158,6 +160,7 @@ export default function FileBrowser({
                   key={file.id}
                   file={file}
                   viewMode="list"
+                  onClick={onFileClick}
                   onContextMenu={onContextMenu}
                 />
               ))}
