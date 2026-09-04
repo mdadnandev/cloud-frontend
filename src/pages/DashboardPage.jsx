@@ -112,42 +112,32 @@ export default function DashboardPage() {
   };
 
   // ==========================================
-  // DIRECT RENDER SERVER SE FILE OPEN KARNE KA LOGIC
-  // ==========================================
+  // Open / View / Download file
   const handleFileClick = async (file) => {
-    console.log("➡️ STEP 1: File clicked! Data:", file);
-
     try {
-      const token = localStorage.getItem('token');
-      console.log("➡️ STEP 2: Token available?", token ? "Yes" : "No");
+      addToast('info', `Opening "${file.originalName || file.name || 'file'}"...`);
+      const res = await fileAPI.getDownloadUrl(file.id);
+      const downloadUrl = res.data?.downloadUrl;
 
-      // Yahan direct Render API lagayi gayi hai (localhost hata diya hai)
-      const response = await fetch(`https://cloud-backend-2-miwe.onrender.com/api/files/${file.id}/download-url`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      if (downloadUrl) {
+        const win = window.open(downloadUrl, '_blank', 'noopener,noreferrer');
+        if (!win) {
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.download = file.originalName || file.name || 'download';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
         }
-      });
-
-      console.log("➡️ STEP 3: API Response Status:", response.status);
-
-      if (!response.ok) {
-        throw new Error(`Backend returned status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("➡️ STEP 4: URL received from backend:", data);
-
-      if (data.downloadUrl) {
-        console.log("➡️ STEP 5: Opening new tab!");
-        window.open(data.downloadUrl, '_blank');
       } else {
-        console.error("❌ ERROR: Backend did not return a 'downloadUrl'");
+        addToast('error', 'Backend did not return a valid download link');
       }
     } catch (error) {
-      console.error("❌ ERROR in handleFileClick:", error);
-      addToast('error', 'Could not open this file. Check console (F12) for details.');
+      console.error('Error opening file:', error);
+      const msg = error.response?.data?.message || 'Could not open this file';
+      addToast('error', msg);
     }
   };
 
@@ -159,7 +149,13 @@ export default function DashboardPage() {
 
   const handleContextMenuAction = async (actionId, item, itemType) => {
     setContextMenu(null);
-    if (actionId === 'rename') {
+    if (actionId === 'open') {
+      if (itemType === 'folder') {
+        handleFolderClick(item);
+      } else {
+        handleFileClick(item);
+      }
+    } else if (actionId === 'rename') {
       setRenameTarget(item);
     } else if (actionId === 'move') {
       setMoveTarget(item);
