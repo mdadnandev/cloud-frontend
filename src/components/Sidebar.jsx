@@ -26,7 +26,7 @@ export default function Sidebar({ activeView, onViewChange, onUploadClick, isOpe
               <path d="M2.5 6.5 10 10.5l7.5-4M10 10.5v7" />
             </svg>
           </div>
-          <span>Create</span>
+          <span>Cloud Storage</span>
         </div>
 
         {/* Upload Action */}
