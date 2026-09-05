@@ -36,7 +36,7 @@ export default function LoginPage() {
             <path d="M2.5 6.5 10 10.5l7.5-4M10 10.5v7" />
           </svg>
         </div>
-        <h1>Crate</h1>
+        <h1>Create</h1>
         <p>Every file, exactly where you left it.</p>
       </div>
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
         </form>
 
         <div className="auth-foot">
-          New to Crate? <Link to="/register" className="link">Create an account</Link>
+          New to Create? <Link to="/register" className="link">Create an account</Link>
         </div>
       </div>
     </div>

@@ -2,6 +2,21 @@ import FolderCard from './FolderCard';
 import FileCard from './FileCard';
 import '../styles/file-browser.css';
 
+const getFilterLabel = (filter) => {
+  switch (filter) {
+    case 'doc':
+      return 'Document';
+    case 'image':
+      return 'Image';
+    case 'video':
+      return 'Video';
+    case 'audio':
+      return 'Audio';
+    default:
+      return 'File';
+  }
+};
+
 export default function FileBrowser({
   folders = [],
   files = [],
@@ -12,6 +27,8 @@ export default function FileBrowser({
   onContextMenu,
   activeView = 'my-drive',
   searchQuery = '',
+  activeFilter = 'all',
+  onClearFilter,
   onUploadClick,
   onCreateFolderClick,
 }) {
@@ -44,6 +61,12 @@ export default function FileBrowser({
     </svg>
   );
 
+  const filterEmptySvg = (
+    <svg viewBox="0 0 20 20">
+      <path d="M2.5 4h15l-6 7v6l-3-2v-4z" />
+    </svg>
+  );
+
   if (loading) {
     return (
       <div>
@@ -60,7 +83,31 @@ export default function FileBrowser({
     );
   }
 
-  const hasItems = folders.length > 0 || files.length > 0;
+  // If a specific file type filter is selected (doc, image, video, audio)
+  const isFiltered = activeFilter !== 'all';
+
+  if (isFiltered && files.length === 0) {
+    const filterName = getFilterLabel(activeFilter);
+    return (
+      <div className="empty-state">
+        <div className="empty-state-icon icon">{filterEmptySvg}</div>
+        <h3>No {filterName.toLowerCase()} files found</h3>
+        <p>There are no {filterName.toLowerCase()} files matching your filter in this view.</p>
+        <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+          {onClearFilter && (
+            <button className="btn btn-ghost" onClick={onClearFilter}>
+              Show All Files
+            </button>
+          )}
+          <button className="btn btn-primary" onClick={onUploadClick}>
+            Upload {filterName}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const hasItems = (isFiltered ? false : folders.length > 0) || files.length > 0;
 
   if (!hasItems) {
     if (searchQuery) {
@@ -112,8 +159,8 @@ export default function FileBrowser({
 
   return (
     <div className="file-browser-container">
-      {/* Folders Section */}
-      {folders.length > 0 && (
+      {/* Folders Section - only show when not filtering by a specific file type */}
+      {!isFiltered && folders.length > 0 && (
         <>
           <p className="section-label">Folders ({folders.length})</p>
           <div className="grid-view" style={{ marginBottom: 24 }}>
@@ -133,7 +180,9 @@ export default function FileBrowser({
       {/* Files Section */}
       {files.length > 0 && (
         <>
-          <p className="section-label">Files ({files.length})</p>
+          <p className="section-label">
+            {isFiltered ? `${getFilterLabel(activeFilter)} Files` : 'Files'} ({files.length})
+          </p>
           {viewMode === 'grid' ? (
             <div className="grid-view">
               {files.map((file) => (
@@ -171,4 +220,3 @@ export default function FileBrowser({
     </div>
   );
 }
-

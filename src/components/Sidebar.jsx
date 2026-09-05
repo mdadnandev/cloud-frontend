@@ -26,7 +26,7 @@ export default function Sidebar({ activeView, onViewChange, onUploadClick, isOpe
               <path d="M2.5 6.5 10 10.5l7.5-4M10 10.5v7" />
             </svg>
           </div>
-          <span>Crate</span>
+          <span>Create</span>
         </div>
 
         {/* Upload Action */}
@@ -101,17 +101,6 @@ export default function Sidebar({ activeView, onViewChange, onUploadClick, isOpe
             Trash
           </button>
         </nav>
-
-        {/* Storage Bar */}
-        <div className="rail-storage">
-          <div className="rail-storage-label">Storage</div>
-          <div className="rail-storage-bar">
-            <div className="rail-storage-fill" style={{ width: '63%' }} />
-          </div>
-          <div className="rail-storage-text">
-            <span className="mono">12.6 GB</span> of <span className="mono">20 GB</span> used
-          </div>
-        </div>
 
         {/* User Profile */}
         <div className="rail-profile">

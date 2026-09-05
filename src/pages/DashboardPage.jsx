@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Breadcrumb from '../components/Breadcrumb';
 import FileBrowser from '../components/FileBrowser';
+import FileTypeFilter from '../components/FileTypeFilter';
 import ContextMenu from '../components/ContextMenu';
 import CreateFolderModal from '../components/CreateFolderModal';
 import UploadZone from '../components/UploadZone';
@@ -11,6 +12,7 @@ import MoveModal from '../components/MoveModal';
 import ShareModal from '../components/ShareModal';
 import PublicLinkModal from '../components/PublicLinkModal';
 import { fileAPI, folderAPI, shareAPI, trashAPI, searchAPI } from '../api/axios';
+import { getFileCategory } from '../utils/fileUtils';
 import '../styles/dashboard.css';
 
 export default function DashboardPage() {
@@ -20,6 +22,7 @@ export default function DashboardPage() {
   const [viewMode, setViewMode] = useState('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('all');
 
   const [folders, setFolders] = useState([]);
   const [files, setFiles] = useState([]);
@@ -91,14 +94,17 @@ export default function DashboardPage() {
     setCurrentFolderId(null);
     setFolderPath([]);
     setSearchQuery('');
+    setActiveFilter('all');
   };
 
   const handleFolderClick = (folder) => {
     setCurrentFolderId(folder.id);
     setFolderPath((prev) => [...prev, { id: folder.id, name: folder.name }]);
+    setActiveFilter('all');
   };
 
   const handleBreadcrumbNavigate = (targetFolderId) => {
+    setActiveFilter('all');
     if (targetFolderId === null) {
       setCurrentFolderId(null);
       setFolderPath([]);
@@ -110,6 +116,33 @@ export default function DashboardPage() {
       }
     }
   };
+
+  // Filter file counts
+  const filterCounts = useMemo(() => {
+    const counts = {
+      all: files.length,
+      doc: 0,
+      image: 0,
+      video: 0,
+      audio: 0,
+    };
+
+    files.forEach((file) => {
+      const cat = getFileCategory(file);
+      if (cat === 'doc') counts.doc += 1;
+      else if (cat === 'image') counts.image += 1;
+      else if (cat === 'video') counts.video += 1;
+      else if (cat === 'audio') counts.audio += 1;
+    });
+
+    return counts;
+  }, [files]);
+
+  // Filtered files based on activeFilter
+  const filteredFiles = useMemo(() => {
+    if (activeFilter === 'all') return files;
+    return files.filter((file) => getFileCategory(file) === activeFilter);
+  }, [files, activeFilter]);
 
   // ==========================================
   // Open / View / Download file
@@ -211,7 +244,9 @@ export default function DashboardPage() {
             <div>
               <h1>{getViewTitle()}</h1>
               <div className="sub">
-                {folders.length + files.length} items · updated today
+                {activeFilter === 'all'
+                  ? `${folders.length + files.length} items · updated today`
+                  : `Showing ${filteredFiles.length} of ${files.length} files`}
               </div>
             </div>
 
@@ -232,9 +267,16 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* File Type Filter Bar (Doc, Image, Video, Audio, All) */}
+          <FileTypeFilter
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+            counts={filterCounts}
+          />
+
           <FileBrowser
             folders={folders}
-            files={files}
+            files={filteredFiles}
             viewMode={viewMode}
             loading={loading}
             onFolderClick={handleFolderClick}
@@ -242,6 +284,8 @@ export default function DashboardPage() {
             onContextMenu={handleContextMenu}
             activeView={activeView}
             searchQuery={searchQuery}
+            activeFilter={activeFilter}
+            onClearFilter={() => setActiveFilter('all')}
             onUploadClick={() => setUploadModalOpen(true)}
             onCreateFolderClick={() => setCreateFolderOpen(true)}
           />

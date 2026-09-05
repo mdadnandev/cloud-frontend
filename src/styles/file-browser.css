@@ -1,6 +1,105 @@
 /* ==========================================
-   FILE BROWSER — Grid & List Views + Context Menu (Crate Theme)
+   FILE BROWSER — Grid & List Views + Context Menu (Create Theme)
    ========================================== */
+
+/* File Type Filter Bar */
+.file-type-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.file-type-filter-bar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.file-type-filter-bar::-webkit-scrollbar-thumb {
+  background: var(--hairline-strong);
+  border-radius: 2px;
+}
+
+.filter-chips-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--hairline-strong);
+  color: var(--chalk-dim);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s var(--ease);
+  user-select: none;
+}
+
+.filter-chip:hover {
+  background: var(--surface-raised);
+  color: var(--chalk);
+  border-color: var(--chalk-dim);
+}
+
+.filter-chip.active {
+  background: var(--brass-soft);
+  color: var(--brass);
+  border-color: var(--brass);
+  box-shadow: 0 0 12px rgba(200, 155, 60, 0.18);
+}
+
+.filter-chip-icon {
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-chip-label {
+  font-size: 12.5px;
+}
+
+.filter-chip-count {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--graphite);
+}
+
+.filter-chip.active .filter-chip-count {
+  background: rgba(200, 155, 60, 0.22);
+  color: var(--brass);
+}
+
+.filter-clear-btn {
+  font-size: 12px;
+  color: var(--graphite);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.12s var(--ease);
+}
+
+.filter-clear-btn:hover {
+  color: var(--brass);
+  text-decoration: underline;
+}
 
 .section-label {
   font-size: 12px;
@@ -31,7 +130,7 @@
   padding: 14px;
   cursor: pointer;
   position: relative;
-  transition: border-color .14s var(--ease), background .14s var(--ease);
+  transition: border-color .14s var(--ease), background .14s var(--ease), transform .14s var(--ease);
 }
 
 .file-card:hover,
@@ -62,6 +161,50 @@
   align-items: center;
   justify-content: center;
   color: var(--chalk-dim);
+  transition: all 0.15s var(--ease);
+}
+
+/* Specific category icon styling */
+.file-card-icon.is-doc,
+.list-row-icon.is-doc {
+  color: #60a5fa;
+  border-color: rgba(96, 165, 250, 0.25);
+  background: rgba(96, 165, 250, 0.08);
+}
+
+.file-card-icon.is-image,
+.list-row-icon.is-image {
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.25);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.file-card-icon.is-video,
+.list-row-icon.is-video {
+  color: #f43f5e;
+  border-color: rgba(244, 63, 94, 0.25);
+  background: rgba(244, 63, 94, 0.08);
+}
+
+.file-card-icon.is-audio,
+.list-row-icon.is-audio {
+  color: #a855f7;
+  border-color: rgba(168, 85, 247, 0.25);
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.file-card-icon.is-code,
+.list-row-icon.is-code {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.25);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.file-card-icon.is-archive,
+.list-row-icon.is-archive {
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(245, 158, 11, 0.08);
 }
 
 .folder-card .file-card-icon {
@@ -120,6 +263,31 @@
   border-radius: 3px;
   padding: 1px 5px;
   font-size: 10.5px;
+}
+
+.file-card-meta .ext.is-doc {
+  color: #93c5fd;
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+.file-card-meta .ext.is-image {
+  color: #7dd3fc;
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
+.file-card-meta .ext.is-video {
+  color: #fda4af;
+  border-color: rgba(244, 63, 94, 0.2);
+}
+
+.file-card-meta .ext.is-audio {
+  color: #d8b4fe;
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+.file-card-meta .ext.is-code {
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.2);
 }
 
 /* List View */

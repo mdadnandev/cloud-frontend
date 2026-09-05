@@ -43,7 +43,7 @@ export default function RegisterPage() {
             <path d="M2.5 6.5 10 10.5l7.5-4M10 10.5v7" />
           </svg>
         </div>
-        <h1>Crate</h1>
+        <h1>Create</h1>
         <p>Start keeping your files in order.</p>
       </div>
 
@@ -115,7 +115,7 @@ export default function RegisterPage() {
         </form>
 
         <div className="auth-foot">
-          Already have an account? <Link to="/register" className="link">Sign in</Link>
+          Already have an account? <Link to="/login" className="link">Sign in</Link>
         </div>
       </div>
     </div>
