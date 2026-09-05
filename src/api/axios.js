@@ -21,14 +21,14 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor — handle 401/403 (expired/invalid token or access denied)
+// Response interceptor — handle 401 (expired/invalid token)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
     const isAuthRequest = error.config?.url?.includes('/auth/');
     
-    if ((status === 401 || status === 403) && !isAuthRequest) {
+    if (status === 401 && !isAuthRequest) {
       localStorage.removeItem('drive_token');
       localStorage.removeItem('drive_user');
       if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
@@ -85,6 +85,7 @@ export const searchAPI = {
 export const shareAPI = {
   share: (data) => api.post('/shares', data),
   getSharedWithMe: () => api.get('/shares/me'),
+  removeShare: (id) => api.delete(`/shares/${id}`),
 };
 
 // ============ TRASH ============

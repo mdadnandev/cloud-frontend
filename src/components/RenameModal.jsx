@@ -3,7 +3,7 @@ import { X, Pencil } from 'lucide-react';
 import { fileAPI } from '../api/axios';
 
 export default function RenameModal({ item, onClose, onRenamed }) {
-  const [name, setName] = useState(item?.originalName || item?.name || '');
+  const [name, setName] = useState(item?.originalName || item?.name || item?.file?.originalName || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -13,7 +13,8 @@ export default function RenameModal({ item, onClose, onRenamed }) {
     setLoading(true);
     setError('');
     try {
-      await fileAPI.rename(item.id, name.trim());
+      const targetId = item?.id || item?.file?.id;
+      await fileAPI.rename(targetId, name.trim());
       onRenamed();
       onClose();
     } catch (err) {

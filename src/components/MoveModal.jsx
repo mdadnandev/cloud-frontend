@@ -30,7 +30,8 @@ export default function MoveModal({ item, onClose, onMoved, availableFolders = [
     setLoading(true);
     setError('');
     try {
-      await fileAPI.move(item.id, selectedFolderId);
+      const targetId = item?.id || item?.file?.id;
+      await fileAPI.move(targetId, selectedFolderId);
       onMoved();
       onClose();
     } catch (err) {
@@ -40,13 +41,15 @@ export default function MoveModal({ item, onClose, onMoved, availableFolders = [
     }
   };
 
+  const displayName = item?.originalName || item?.name || item?.file?.originalName || 'item';
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">
             <FolderInput size={18} style={{ marginRight: 8, verticalAlign: 'middle', color: 'var(--accent-primary)' }} />
-            Move &ldquo;{item?.originalName || item?.name}&rdquo;
+            Move &ldquo;{displayName}&rdquo;
           </h3>
           <button className="btn-icon" onClick={onClose}>
             <X size={18} />

@@ -18,7 +18,7 @@ export default function ShareModal({ file, onClose }) {
     setSuccess(false);
     try {
       await shareAPI.share({
-        fileId: file.id,
+        fileId: file?.id || file?.file?.id,
         targetEmail: email.trim(),
         permission,
       });
@@ -31,13 +31,15 @@ export default function ShareModal({ file, onClose }) {
     }
   };
 
+  const displayName = file?.originalName || file?.name || file?.file?.originalName || 'File';
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content share-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">
             <Share2 size={18} style={{ marginRight: 8, verticalAlign: 'middle', color: 'var(--accent-primary)' }} />
-            Share &ldquo;{file?.originalName}&rdquo;
+            Share &ldquo;{displayName}&rdquo;
           </h3>
           <button className="btn-icon" onClick={onClose}>
             <X size={18} />

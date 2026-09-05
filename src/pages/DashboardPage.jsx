@@ -71,7 +71,24 @@ export default function DashboardPage() {
       } else if (activeView === 'shared') {
         setFolders([]);
         const sharedRes = await shareAPI.getSharedWithMe();
-        setFiles(Array.isArray(sharedRes.data) ? sharedRes.data : []);
+        const rawList = Array.isArray(sharedRes.data) ? sharedRes.data : [];
+        const normalizedFiles = rawList.map((item) => {
+          if (item.file) {
+            return {
+              ...item.file,
+              shareId: item.id,
+              permission: item.permission,
+              sharedBy: item.sharedBy,
+              sharedAt: item.createdAt,
+              isShared: true,
+            };
+          }
+          return {
+            ...item,
+            isShared: true,
+          };
+        });
+        setFiles(normalizedFiles);
       } else if (activeView === 'trash') {
         setFolders([]);
         const trashRes = await trashAPI.listTrashed();
@@ -148,8 +165,10 @@ export default function DashboardPage() {
   // Open / View / Download file
   const handleFileClick = async (file) => {
     try {
-      addToast('info', `Opening "${file.originalName || file.name || 'file'}"...`);
-      const res = await fileAPI.getDownloadUrl(file.id);
+      const fileName = file.originalName || file.name || file.file?.originalName || 'file';
+      const fileId = file.id || file.file?.id;
+      addToast('info', `Opening "${fileName}"...`);
+      const res = await fileAPI.getDownloadUrl(fileId);
       const downloadUrl = res.data?.downloadUrl;
 
       if (downloadUrl) {
@@ -159,7 +178,7 @@ export default function DashboardPage() {
           a.href = downloadUrl;
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
-          a.download = file.originalName || file.name || 'download';
+          a.download = fileName;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -196,11 +215,26 @@ export default function DashboardPage() {
       setShareTarget(item);
     } else if (actionId === 'public-link') {
       setPublicLinkTarget(item);
+    } else if (actionId === 'remove-shared') {
+      try {
+        if (item.shareId || item.id) {
+          await shareAPI.removeShare(item.shareId || item.id);
+          addToast('success', `Removed "${item.originalName || item.name || 'file'}" from shared files`);
+        }
+        loadContent();
+      } catch (err) {
+        addToast('error', err.response?.data?.message || 'Failed to remove shared file');
+      }
     } else if (actionId === 'trash') {
       try {
-        if (itemType === 'file') {
+        if (item.isShared || activeView === 'shared') {
+          if (item.shareId || item.id) {
+            await shareAPI.removeShare(item.shareId || item.id);
+            addToast('success', `Removed "${item.originalName || item.name || 'file'}" from shared files`);
+          }
+        } else if (itemType === 'file') {
           await trashAPI.trashFile(item.id);
-          addToast('success', `Moved "${item.originalName || item.name}" to trash`);
+          addToast('success', `Moved "${item.originalName || item.name || 'file'}" to trash`);
         }
         loadContent();
       } catch (err) {

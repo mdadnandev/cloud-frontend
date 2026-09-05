@@ -61,7 +61,15 @@ export default function ContextMenu({ x, y, item, itemType, onClose, onAction })
     </svg>
   );
 
-  const fileActions = [
+  const isSharedItem = item?.isShared || !!item?.sharedBy || !!item?.shareId;
+
+  const sharedFileActions = [
+    { id: 'open', label: 'Open / Download', svg: openSvg },
+    { divider: true },
+    { id: 'remove-shared', label: 'Remove from Shared', svg: trashSvg, danger: true },
+  ];
+
+  const fileActions = isSharedItem ? sharedFileActions : [
     { id: 'open', label: 'Open / Download', svg: openSvg },
     { id: 'rename', label: 'Rename', svg: renameSvg },
     { id: 'share', label: 'Share', svg: shareSvg },

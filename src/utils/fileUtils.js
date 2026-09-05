@@ -5,8 +5,9 @@ export const getFileExtension = (name) => {
 };
 
 export const getFileCategory = (file) => {
-  const name = (file?.originalName || file?.name || '').toLowerCase();
-  const mime = (file?.mimeType || '').toLowerCase();
+  const target = file?.file || file;
+  const name = (target?.originalName || target?.name || file?.originalName || file?.name || '').toLowerCase();
+  const mime = (target?.mimeType || file?.mimeType || '').toLowerCase();
   const ext = name.includes('.') ? name.split('.').pop() : '';
 
   // 1. Image
@@ -72,6 +73,7 @@ export const getFileCategory = (file) => {
 };
 
 export const formatSize = (bytes) => {
+  if (typeof bytes !== 'number' && typeof bytes !== 'bigint') return '—';
   if (!bytes && bytes !== 0) return '—';
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;

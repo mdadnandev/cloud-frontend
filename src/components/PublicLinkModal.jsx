@@ -24,7 +24,7 @@ export default function PublicLinkModal({ file, onClose }) {
     setError('');
     try {
       const res = await publicLinkAPI.create({
-        fileId: file.id,
+        fileId: file?.id || file?.file?.id,
         permission,
         expiryDays,
         password: password || null,
@@ -47,6 +47,8 @@ export default function PublicLinkModal({ file, onClose }) {
     }
   };
 
+  const displayName = file?.originalName || file?.name || file?.file?.originalName || 'file';
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -62,7 +64,7 @@ export default function PublicLinkModal({ file, onClose }) {
 
         <div className="modal-form">
           <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 4 }}>
-            Create a shareable link for <strong style={{ color: 'var(--text-primary)' }}>{file?.originalName}</strong>
+            Create a shareable link for <strong style={{ color: 'var(--text-primary)' }}>{displayName}</strong>
           </div>
 
           <div className="input-group">

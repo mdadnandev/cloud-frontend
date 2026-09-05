@@ -50,9 +50,13 @@ const renderFileIcon = (category) => {
 };
 
 export default function FileCard({ file, viewMode, onContextMenu, onClick }) {
-  const fileName = file.originalName || file.name || 'Untitled';
+  const fileName = file.originalName || file.name || file.file?.originalName || file.file?.name || 'Untitled';
   const ext = getFileExtension(fileName);
   const category = getFileCategory(file);
+  const fileSize = file.size ?? file.file?.size;
+  const fileDate = file.createdAt || file.file?.createdAt;
+  const isShared = file.isShared || !!file.sharedBy;
+  const sharedByName = file.sharedBy?.name || file.sharedBy?.email;
 
   const moreSvg = (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
@@ -72,11 +76,28 @@ export default function FileCard({ file, viewMode, onContextMenu, onClick }) {
         onClick={() => onClick && onClick(file)}
       >
         <span className={`list-row-icon icon is-${category}`}>{iconSvg}</span>
-        <span className="list-row-name">{fileName}</span>
-        <span className="list-row-date mono">
-          {file.createdAt ? new Date(file.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
+        <span className="list-row-name">
+          {fileName}
+          {isShared && (
+            <span
+              style={{
+                marginLeft: 8,
+                fontSize: '11px',
+                padding: '1px 6px',
+                borderRadius: '4px',
+                background: 'rgba(56, 189, 248, 0.12)',
+                color: '#38bdf8',
+                border: '1px solid rgba(56, 189, 248, 0.25)',
+              }}
+            >
+              {sharedByName ? `by ${sharedByName}` : 'Shared'}
+            </span>
+          )}
         </span>
-        <span className="list-row-size mono">{formatSize(file.size)}</span>
+        <span className="list-row-date mono">
+          {fileDate ? new Date(fileDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
+        </span>
+        <span className="list-row-size mono">{formatSize(fileSize)}</span>
         <button
           className="list-row-more menu-trigger"
           onClick={(e) => {
@@ -101,23 +122,41 @@ export default function FileCard({ file, viewMode, onContextMenu, onClick }) {
     >
       <div className="file-card-top">
         <span className={`file-card-icon icon is-${category}`}>{iconSvg}</span>
-        <button
-          className="file-card-more menu-trigger"
-          onClick={(e) => {
-            e.stopPropagation();
-            onContextMenu(e, file, 'file');
-          }}
-          aria-label="More options"
-        >
-          <span className="icon" style={{ width: 14, height: 14 }}>
-            {moreSvg}
-          </span>
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {isShared && (
+            <span
+              style={{
+                fontSize: '10px',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                background: 'rgba(56, 189, 248, 0.12)',
+                color: '#38bdf8',
+                border: '1px solid rgba(56, 189, 248, 0.25)',
+                fontWeight: 500,
+              }}
+              title={sharedByName ? `Shared by ${sharedByName}` : 'Shared file'}
+            >
+              Shared
+            </span>
+          )}
+          <button
+            className="file-card-more menu-trigger"
+            onClick={(e) => {
+              e.stopPropagation();
+              onContextMenu(e, file, 'file');
+            }}
+            aria-label="More options"
+          >
+            <span className="icon" style={{ width: 14, height: 14 }}>
+              {moreSvg}
+            </span>
+          </button>
+        </div>
       </div>
       <div className="file-card-name" title={fileName}>{fileName}</div>
       <div className="file-card-meta">
         <span className={`ext is-${category}`}>{ext}</span>
-        <span className="mono">{formatSize(file.size)}</span>
+        <span className="mono">{formatSize(fileSize)}</span>
       </div>
     </div>
   );
